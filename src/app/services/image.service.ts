@@ -67,7 +67,7 @@ export class ImageService {
       this.renderingEngineId
     );
   }
-  
+
   loadDataSetFromURL(url: any) {
     return cornerstoneDICOMImageLoader.wadouri.dataSetCacheManager.load(
       url,
@@ -81,5 +81,37 @@ export class ImageService {
 
   getImageIdFromFile(file: any) {
     return cornerstoneDICOMImageLoader.wadouri.fileManager.add(file);
+  }
+
+  async loadImageOnViewport(viewportId: string, imageId: any) {
+    const renderingEngine = this.renderingEngine;
+
+    let element: any = document.getElementById(viewportId);
+
+    const viewportInput: any = {
+      viewportId: viewportId,
+      type: cornerstone3d.Enums.ViewportType.STACK,
+      element,
+      defaultOptions: {
+        background: <cornerstone3d.Types.Point3>[0, 0, 0],
+      },
+    };
+
+    const enabledElement: any = cornerstone3d.getEnabledElement(element);
+
+    if (!enabledElement) {
+      renderingEngine.enableElement(viewportInput);
+    }
+
+    const viewport: any = <cornerstone3d.Types.IStackViewport>(
+      renderingEngine.getViewport(viewportId)
+    );
+
+    await viewport.setStack([imageId]);
+
+    viewport.resetProperties();
+    viewport.resetCamera(true, true);
+
+    viewport.render();
   }
 }

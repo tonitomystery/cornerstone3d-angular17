@@ -14,6 +14,8 @@ export class AppComponent {
 
   // file = File;
 
+  viewportId = 'viewportId';
+
   imageService = inject(ImageService);
 
   onChange(event: any) {
@@ -30,5 +32,6 @@ export class AppComponent {
     let dataSet = await this.imageService.loadImage(imageId);
     let patientName = dataSet.data.string('x00100010');
     console.log('🚀 ~ AppComponent ~  patientName:', patientName);
+    this.imageService.loadImageOnViewport(this.viewportId, imageId);
   }
 }
