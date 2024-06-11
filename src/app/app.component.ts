@@ -12,5 +12,23 @@ import { ImageService } from './services/image.service';
 export class AppComponent {
   title = 'cornerstone-angular17';
 
+  // file = File;
+
   imageService = inject(ImageService);
+
+  onChange(event: any) {
+    event.stopPropagation();
+    event.preventDefault();
+
+    const files = event.target.files;
+    this.proccessFile(files[0]);
+  }
+
+  async proccessFile(file: File) {
+    const imageId = this.imageService.getImageIdFromFile(file);
+
+    let dataSet = await this.imageService.loadImage(imageId);
+    let patientName = dataSet.data.string('x00100010');
+    console.log('🚀 ~ AppComponent ~  patientName:', patientName);
+  }
 }
